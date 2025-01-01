@@ -1,1 +1,0 @@
-select * from source1.craft_market_wide

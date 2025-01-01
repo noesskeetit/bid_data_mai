@@ -9,9 +9,9 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5430:5432"
+      - "4040:4040"
     volumes:
       - ./pgdata:/var/lib/postgresql/data/pgdata
-      # Сделал так, чтобы подтягивались csv и create-скрипты при инициализации постгре
       - ./create_sources_and_tables:/docker-entrypoint-initdb.d
       - ./data_for_sources:/data/csv
     deploy:
@@ -38,6 +38,29 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+
+  spark-notebook:
+    image: jupyter/all-spark-notebook
+    container_name: spark_notebook
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: >
+      start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
+    volumes:
+      - ./notebook:/home/jovyan
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sSf http://localhost:8888 || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   pgdata:
