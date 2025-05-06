@@ -1,0 +1,8 @@
+/notebook/.cache/
+/notebook/.ipynb_checkpoints/
+/notebook/.ipython/
+/notebook/.ivy2/
+/notebook/.jupyter/
+/notebook/.local/
+/notebook/.npm/
+/pgdata/
